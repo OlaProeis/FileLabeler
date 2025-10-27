@@ -159,20 +159,6 @@ Invoke-Pester -Path .\tests\FileLabeler.Tests.ps1
 
 ---
 
-## Comparison with Purview Client
-
-| Feature | FileLabeler | Purview Client |
-|---------|-------------|----------------|
-| Install Size | ~5 MB | ~150 MB |
-| Date Preservation | ✅ Always | ⚠️ Changes date |
-| Standalone App | ✅ Yes | ❌ Context menu only |
-| Bulk Labeling | ✅ Optimized | ⚠️ Limited |
-| Visual Feedback | ✅ Progress bar | ❌ None |
-| Detailed Logging | ✅ Yes | ⚠️ Limited |
-| CSV Export | ✅ Yes | ❌ No |
-
----
-
 ## Tech Stack
 
 - **Language**: PowerShell 5.1+
