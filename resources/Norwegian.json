@@ -1,0 +1,299 @@
+﻿{
+    "_metadata": {
+        "language": "Norwegian (Bokmål)",
+        "languageCode": "nb-NO",
+        "version": "1.0",
+        "lastUpdated": "2025-10-26"
+    },
+    "form": {
+        "title": "Massemerking av filer - Følsomhetsetiketter",
+        "footer": "Microsoft Purview Information Protection - Massemerking av filer v1.0"
+    },
+    "buttons": {
+        "browse": "Velg filer...",
+        "folder": "Velg mappe...",
+        "clear": "Tøm valg",
+        "apply": "Påfør etikett (bevar datoer)",
+        "viewLog": "Vis logg",
+        "settings": "Innstillinger",
+        "save": "Lagre",
+        "cancel": "Avbryt",
+        "ok": "OK",
+        "close": "Lukk",
+        "export": "Eksporter til CSV",
+        "reset": "Tilbakestill til standardverdier",
+        "browseFolderShort": "...",
+        "applyChanges": "Påfør endringer",
+        "removeFile": "Fjern fil"
+    },
+    "groupBoxes": {
+        "fileSelection": "Filvalg",
+        "sensitivityLabel": "Følsomhetsetikett",
+        "progress": "Fremdrift",
+        "summary": "Oppsummering",
+        "warnings": "Advarsler",
+        "breakdown": "Endringer etter type",
+        "protectionSettings": "Beskyttelsesinnstillinger"
+    },
+    "labels": {
+        "selectLabel": "Velg etikett:",
+        "includeSubfolders": "Inkluder undermapper",
+        "noLabels": "Ingen etiketter konfigurert. Legg til i labels_config.json",
+        "fileCount_none": "Ingen filer valgt",
+        "fileCount_single": "1 fil valgt",
+        "fileCount_multiple": "{0} filer valgt"
+    },
+    "status": {
+        "ready": "Klar. Velg filer og en etikett for å starte.",
+        "scanningFolder": "Skanner mappe...",
+        "scanningFolderAsync": "Skanner mappe asynkront...",
+        "retrievingLabels": "Henter etikettinformasjon...",
+        "retrievingLabelsAsync": "Henter etikettinformasjon asynkront...",
+        "updatingDisplay": "Oppdaterer visning...",
+        "processingDrop": "Behandler dratt innhold...",
+        "analyzingChanges": "Analyserer endringer...",
+        "labellingCancelled": "Merking avbrutt av bruker.",
+        "noFilesToProcess": "Ingen filer å behandle (alle har allerede valgt etikett).",
+        "filesLoaded": "Filer lastet inn: {0} filer totalt, {1} nye lagt til.",
+        "noNewFiles": "Ingen nye filer lagt til (alle allerede valgt).",
+        "folderScanned": "Mappe skannet: {0} filer funnet, {1} nye lagt til.",
+        "noNewFilesInFolder": "Ingen nye filer funnet i mappen (alle allerede valgt).",
+        "noSupportedFiles": "Ingen støttede filer funnet i mappen.",
+        "dragDropComplete": "Drag-and-drop: {0} filer funnet, {1} nye lagt til.",
+        "processingFile": "Behandler ({0}/{1}): {2}",
+        "labelsRetrieved": "Etiketter hentet ({0} filer).",
+        "asyncFailed": "Async feilet, prøver synkron modus...",
+        "timeout": "TIMEOUT: Mappeskanning tok for lang tid ({0}s)",
+        "selectionCleared": "Filvalg tømt.",
+        "settingsUpdated": "Innstillinger oppdatert. Noen endringer krever omstart."
+    },
+    "errors": {
+        "noFilesSelected": "FEIL: Ingen filer valgt. Vennligst velg filer først.",
+        "noLabelSelected": "FEIL: Ingen etikett valgt. Vennligst velg en følsomhetsetikett.",
+        "couldNotScanFolder": "FEIL: Kunne ikke skanne mappe.",
+        "couldNotStartAsyncScan": "FEIL: Kunne ikke starte async mappeskanning.",
+        "errorDuringFolderScan": "FEIL under mappeskanning",
+        "couldNotAnalyzeFiles": "FEIL: Kunne ikke analysere filer - {0}"
+    },
+    "dialogs": {
+        "selectFolder": {
+            "description": "Velg mappe"
+        },
+        "missingModule": {
+            "title": "Missing Required Module",
+            "message": "ERROR: {0} module is not installed.\n\nPlease install the Microsoft Purview Information Protection client first.\n\nDownload from: https://www.microsoft.com/en-us/download/details.aspx?id=53018"
+        },
+        "moduleImportFailed": {
+            "title": "Module Import Failed",
+            "message": "ERROR: Failed to import {0} module.\n\nError: {1}"
+        },
+        "labelConfigRequired": {
+            "title": "Label Configuration Required",
+            "message": "Could not automatically retrieve sensitivity labels.\n\nThis can happen if:\n- You're not connected to Security & Compliance Center\n- Labels need to be configured manually\n\nWould you like to:\nYES - Continue with manual label entry\nNO - Exit and configure labels first\n\nNote: You can create a 'labels_config.json' file in the script directory with your organization's labels."
+        },
+        "resetConfig": {
+            "title": "Tilbakestill konfigurasjon",
+            "message": "Dette vil tilbakestille alle innstillinger til standardverdier.\n\nAlle personlige preferanser vil gå tapt.\n\nEr du sikker?",
+            "success_title": "Tilbakestilling vellykket",
+            "success_message": "Konfigurasjon tilbakestilt til standardverdier.\n\nEndringene vil tre i kraft neste gang applikasjonen startes.",
+            "error_title": "Feil",
+            "error_message": "Kunne ikke tilbakestille konfigurasjon:\n\n{0}"
+        },
+        "confirmReset": {
+            "title": "Bekreft tilbakestilling",
+            "message": "Dette vil tilbakestille alle innstillinger til standardverdier.\n\nEr du sikker?"
+        },
+        "validationError": {
+            "title": "Valideringsfeil",
+            "messagePrefix": "Ugyldige innstillinger:\n\n"
+        },
+        "settingsSaved": {
+            "title": "Lagret",
+            "message": "Innstillinger lagret.\n\nNoen endringer trer i kraft neste gang applikasjonen startes."
+        },
+        "saveError": {
+            "title": "Lagringsfeil",
+            "message": "Kunne ikke lagre innstillinger. Se loggfil for detaljer."
+        },
+        "saveErrorDetailed": {
+            "title": "Feil",
+            "message": "Feil under lagring: {0}"
+        },
+        "noSupportedFilesFound": {
+            "title": "Ingen filer funnet",
+            "message": "Ingen støttede Office- eller PDF-filer ble funnet i valgt mappe.\n\nStøttede filtyper: .docx, .xlsx, .pptx, .doc, .xls, .ppt, .pdf"
+        },
+        "folderScanError": {
+            "title": "Feil",
+            "message": "Kunne ikke skanne mappen:\n\n{0}"
+        },
+        "folderScanGeneralError": {
+            "title": "Feil",
+            "message": "En feil oppstod under mappeskanning:\n\n{0}"
+        },
+        "asyncFolderScanError": {
+            "title": "Feil",
+            "message": "Kunne ikke starte mappeskanning:\n\n{0}"
+        },
+        "logNotFound": {
+            "title": "Feil",
+            "message": "Loggfilen ble ikke funnet."
+        },
+        "exportSuccess": {
+            "title": "Eksport vellykket",
+            "message": "Resultater eksportert til:\n{0}"
+        },
+        "exportError": {
+            "title": "Eksportfeil",
+            "message": "Kunne ikke eksportere CSV: {0}"
+        },
+        "summaryDialogError": {
+            "title": "Dialogfeil",
+            "message": "Kunne ikke vise oppsummeringsdialog. Vil du fortsette uten oppsummering?\n\nFeil: {0}"
+        },
+        "protectionCancelled": {
+            "title": "Avbrutt",
+            "message": "Du avbrøt beskyttelsesinnstillingene.\n\nIngen filer vil bli merket."
+        },
+        "asyncLabelError": {
+            "title": "Async Feil",
+            "message": "Async label application feilet:\n\n{0}\n\nFaller tilbake til synkron modus."
+        },
+        "noLogFile": {
+            "title": "Ingen loggfil",
+            "message": "Ingen loggfil eksisterer ennå. Påfør etiketter for å generere en loggfil."
+        }
+    },
+    "settings": {
+        "title": "Innstillinger",
+        "tabs": {
+            "preferences": "Preferanser",
+            "warnings": "Advarsler",
+            "logging": "Logging",
+            "ui": "Brukergrensesnitt"
+        },
+        "preferences": {
+            "rememberLabel": "Husk sist valgte etikett",
+            "includeSubfolders": "Inkluder undermapper som standard",
+            "defaultFolder": "Standardmappe for filvalg:"
+        },
+        "warnings": {
+            "showSummary": "Vis oppsummering før påføring",
+            "massDowngrade": "Advar ved massenedgradering",
+            "largeBatch": "Advar ved store filer behandles",
+            "protectionRequired": "Advar når beskyttelse kreves",
+            "noChanges": "Advar når ingen endringer gjøres",
+            "largeBatchThreshold": "Terskel for stor behandling (antall filer):",
+            "massDowngradeThreshold": "Terskel for massenedgradering (antall filer):"
+        },
+        "logging": {
+            "retention": "Loggoppbevaring (dager, 0 = ingen automatisk sletting):",
+            "detailedLogging": "Aktiver detaljert logging",
+            "customDirectory": "Egendefinert loggmappe (la stå tom for standard):"
+        },
+        "ui": {
+            "language": "Språk:",
+            "languageNote": "OBS: Språkendringer trer i kraft neste gang applikasjonen startes.",
+            "rememberPosition": "Husk vinduposisjon",
+            "windowSizeNote": "Vindustørrelse lagres automatisk når du lukker applikasjonen."
+        }
+    },
+    "summary": {
+        "title": "Oppsummering av endringer",
+        "header": "Du er i ferd med å påføre etiketten '{0}'",
+        "newLabels": "Nye etiketter:",
+        "upgrades": "Oppgraderinger:",
+        "downgrades": "Nedgraderinger:",
+        "sameLabel": "Samme etikett:",
+        "unchanged": "Uendret (samme rangering):",
+        "skipUnchanged": "Hopp over uendrede filer (samme etikett)"
+    },
+    "summaryDialog": {
+        "title": "Oppsummering av endringer",
+        "header": "Du er i ferd med å påføre etiketten '{0}'",
+        "summary": "Oppsummering",
+        "warnings": "Advarsler",
+        "new": "Nye etiketter:",
+        "upgrade": "Oppgraderinger:",
+        "downgrade": "Nedgraderinger:",
+        "same": "Samme etikett:",
+        "unchanged": "Uendret (samme rangering):",
+        "skipUnchanged": "Hopp over uendrede filer (samme etikett)",
+        "applyChanges": "Påfør endringer",
+        "cancel": "Avbryt"
+    },
+    "statistics": {
+        "title": "Merkeresultater",
+        "header": "Merking fullført: {0}",
+        "totalProcessed": "Totalt behandlet:",
+        "successful": "Vellykkede:",
+        "failed": "Feilet:",
+        "timeSpent": "Tid brukt:",
+        "timeFormat_seconds": "{0:F1} sekunder",
+        "timeFormat_minutes": "{0:D}m {1:D}s",
+        "openDetailedLog": "Åpne detaljert logg"
+    },
+    "statisticsDialog": {
+        "title": "Merkeresultater",
+        "header": "Merking fullført: {0}",
+        "summary": "Oppsummering",
+        "totalProcessed": "Totalt behandlet:",
+        "successful": "Vellykkede:",
+        "failed": "Feilet:",
+        "timeUsed": "Tid brukt:",
+        "seconds": "{0} sekunder",
+        "minutesSeconds": "{0}m {1}s",
+        "changesByType": "Endringer etter type",
+        "new": "Nye etiketter",
+        "upgrade": "Oppgraderinger",
+        "downgrade": "Nedgraderinger",
+        "unchanged": "Uendret (samme rangering)",
+        "same": "Samme etikett",
+        "openLog": "Åpne detaljert logg",
+        "logNotFound": "Loggfilen ble ikke funnet.",
+        "error": "Feil",
+        "exportCSV": "Eksporter til CSV",
+        "exportSuccess": "Resultater eksportert til:\n{0}",
+        "exportSuccessTitle": "Eksport vellykket",
+        "exportError": "Kunne ikke eksportere CSV: {0}",
+        "exportErrorTitle": "Eksportfeil",
+        "close": "Lukk"
+    },
+    "protection": {
+        "title": "Beskyttelsesinnstillinger",
+        "header": "Denne etiketten krever beskyttelse.\n\nVelg hvem som kan gjøre hva med filen:",
+        "selectPermission": "Velg tillatelse:",
+        "enterUsers": "Angi brukere, grupper eller organisasjoner (kommaseparert):",
+        "placeholder": "Eksempel: user@domain.com, gruppe@domain.com",
+        "documentExpires": "Dette dokumentet utløper:"
+    },
+    "protectionDialog": {
+        "title": "Beskyttelsesinnstillinger",
+        "description": "Denne etiketten krever beskyttelse.\n\nVelg hvem som kan gjøre hva med filen:",
+        "selectPermission": "Velg tillatelse:",
+        "viewer": "Leser - Bare vise",
+        "reviewer": "Kontrollør - Vise, redigere, ikke kopiere",
+        "coauthor": "Medforfatter - Vise, redigere, kopiere",
+        "coowner": "Medeier - Alle tillatelser",
+        "justMe": "Bare for meg",
+        "enterUsers": "Angi brukere, grupper eller organisasjoner (kommaseparert):",
+        "example": "Eksempel: user@domain.com, gruppe@domain.com",
+        "documentExpires": "Dette dokumentet utløper:",
+        "ok": "OK",
+        "cancel": "Avbryt",
+        "cancelled": "Du avbrøt beskyttelsesinnstillingene.\n\nIngen filer vil bli merket.",
+        "cancelledTitle": "Avbrutt"
+    },
+    "justification": {
+        "title": "Begrunnelse påkrevd",
+        "label": "Begrunnelse for nedgradering av følsomhetsetikett:",
+        "defaultText": "Endret via massemerking"
+    },
+    "changeTypes": {
+        "new": "Ny",
+        "upgrade": "Oppgradering",
+        "downgrade": "Nedgradering",
+        "same": "Samme",
+        "unchanged": "Uendret"
+    }
+}

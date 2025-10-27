@@ -1,0 +1,34 @@
+﻿[
+  {
+    "DisplayName": "Åpen",
+    "Id": "8bc7810f-1601-4c5d-8eaa-56870a5bf913",
+    "Rank": 0
+  },
+  {
+    "DisplayName": "Intern",
+    "Id": "e6f3cebf-f3ea-4f6d-9afa-b2867c184242",
+    "Rank": 1
+  },
+  {
+    "DisplayName": "Fortrolig",
+    "Id": "221e033f-836b-4372-a276-90a25fdd73b5",
+    "Rank": 2
+  },
+  {
+    "DisplayName": "Strengt Fortrolig",
+    "Id": "db735bfd-96f4-488e-b27d-b95706dd8a4e",
+    "Rank": 3,
+    "RequiresProtection": true
+  },
+  {
+    "DisplayName": "Personlig",
+    "Id": "1a0cd44e-077a-4e96-b468-288d5a72830f",
+    "Rank": 6
+  },
+  {
+    "DisplayName": "Privat",
+    "Id": "ddeae3b4-3908-4181-be2b-0bd04b671bfa",
+    "Rank": 7
+  }
+]
+

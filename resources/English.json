@@ -1,0 +1,300 @@
+﻿{
+    "_metadata": {
+        "language": "English",
+        "languageCode": "en-US",
+        "version": "1.0",
+        "lastUpdated": "2025-10-26"
+    },
+    "form": {
+        "title": "File Bulk Labeling - Sensitivity Labels",
+        "footer": "Microsoft Purview Information Protection - File Bulk Labeling v1.0"
+    },
+    "buttons": {
+        "browse": "Select files...",
+        "folder": "Select folder...",
+        "clear": "Clear selection",
+        "apply": "Apply label (preserve dates)",
+        "viewLog": "View log",
+        "settings": "Settings",
+        "save": "Save",
+        "cancel": "Cancel",
+        "ok": "OK",
+        "close": "Close",
+        "export": "Export to CSV",
+        "reset": "Reset to defaults",
+        "browseFolderShort": "...",
+        "applyChanges": "Apply changes",
+        "removeFile": "Remove file"
+    },
+    "groupBoxes": {
+        "fileSelection": "File Selection",
+        "sensitivityLabel": "Sensitivity Label",
+        "progress": "Progress",
+        "summary": "Summary",
+        "warnings": "Warnings",
+        "breakdown": "Changes by type",
+        "protectionSettings": "Protection Settings"
+    },
+    "labels": {
+        "selectLabel": "Select label:",
+        "includeSubfolders": "Include subfolders",
+        "noLabels": "No labels configured. Add to labels_config.json",
+        "fileCount_none": "No files selected",
+        "fileCount_single": "1 file selected",
+        "fileCount_multiple": "{0} files selected"
+    },
+    "status": {
+        "ready": "Ready. Select files and a label to start.",
+        "scanningFolder": "Scanning folder...",
+        "scanningFolderAsync": "Scanning folder asynchronously...",
+        "retrievingLabels": "Retrieving label information...",
+        "retrievingLabelsAsync": "Retrieving label information asynchronously...",
+        "updatingDisplay": "Updating display...",
+        "processingDrop": "Processing dropped content...",
+        "analyzingChanges": "Analyzing changes...",
+        "labellingCancelled": "Labeling cancelled by user.",
+        "noFilesToProcess": "No files to process (all already have the selected label).",
+        "filesLoaded": "Files loaded: {0} files total, {1} new files added.",
+        "noNewFiles": "No new files added (all already selected).",
+        "folderScanned": "Folder scanned: {0} files found, {1} new files added.",
+        "noNewFilesInFolder": "No new files found in folder (all already selected).",
+        "noSupportedFiles": "No supported files found in folder.",
+        "dragDropComplete": "Drag-and-drop: {0} files found, {1} new files added.",
+        "processingFile": "Processing ({0}/{1}): {2}",
+        "labelsRetrieved": "Labels retrieved ({0} files).",
+        "asyncFailed": "Async failed, trying synchronous mode...",
+        "timeout": "TIMEOUT: Folder scan took too long ({0}s)",
+        "selectionCleared": "File selection cleared.",
+        "settingsUpdated": "Settings updated. Some changes require a restart."
+    },
+    "errors": {
+        "noFilesSelected": "ERROR: No files selected. Please select files first.",
+        "noLabelSelected": "ERROR: No label selected. Please select a sensitivity label.",
+        "couldNotScanFolder": "ERROR: Could not scan folder.",
+        "couldNotStartAsyncScan": "ERROR: Could not start async folder scan.",
+        "errorDuringFolderScan": "ERROR during folder scan",
+        "couldNotAnalyzeFiles": "ERROR: Could not analyze files - {0}"
+    },
+    "dialogs": {
+        "selectFolder": {
+            "description": "Select folder"
+        },
+        "missingModule": {
+            "title": "Missing Required Module",
+            "message": "ERROR: {0} module is not installed.\n\nPlease install the Microsoft Purview Information Protection client first.\n\nDownload from: https://www.microsoft.com/en-us/download/details.aspx?id=53018"
+        },
+        "moduleImportFailed": {
+            "title": "Module Import Failed",
+            "message": "ERROR: Failed to import {0} module.\n\nError: {1}"
+        },
+        "labelConfigRequired": {
+            "title": "Label Configuration Required",
+            "message": "Could not automatically retrieve sensitivity labels.\n\nThis can happen if:\n- You're not connected to Security & Compliance Center\n- Labels need to be configured manually\n\nWould you like to:\nYES - Continue with manual label entry\nNO - Exit and configure labels first\n\nNote: You can create a 'labels_config.json' file in the script directory with your organization's labels."
+        },
+        "resetConfig": {
+            "title": "Reset Configuration",
+            "message": "This will reset all settings to default values.\n\nAll personal preferences will be lost.\n\nAre you sure?",
+            "success_title": "Reset Successful",
+            "success_message": "Configuration reset to default values.\n\nChanges will take effect next time the application starts.",
+            "error_title": "Error",
+            "error_message": "Could not reset configuration:\n\n{0}"
+        },
+        "confirmReset": {
+            "title": "Confirm Reset",
+            "message": "This will reset all settings to default values.\n\nAre you sure?"
+        },
+        "validationError": {
+            "title": "Validation Error",
+            "messagePrefix": "Invalid settings:\n\n"
+        },
+        "settingsSaved": {
+            "title": "Saved",
+            "message": "Settings saved.\n\nSome changes take effect next time the application starts."
+        },
+        "saveError": {
+            "title": "Save Error",
+            "message": "Could not save settings. See log file for details."
+        },
+        "saveErrorDetailed": {
+            "title": "Error",
+            "message": "Error during save: {0}"
+        },
+        "noSupportedFilesFound": {
+            "title": "No files found",
+            "message": "No supported Office or PDF files were found in the selected folder.\n\nSupported file types: .docx, .xlsx, .pptx, .doc, .xls, .ppt, .pdf"
+        },
+        "folderScanError": {
+            "title": "Error",
+            "message": "Could not scan folder:\n\n{0}"
+        },
+        "folderScanGeneralError": {
+            "title": "Error",
+            "message": "An error occurred during folder scan:\n\n{0}"
+        },
+        "asyncFolderScanError": {
+            "title": "Error",
+            "message": "Could not start folder scan:\n\n{0}"
+        },
+        "logNotFound": {
+            "title": "Error",
+            "message": "Log file was not found."
+        },
+        "exportSuccess": {
+            "title": "Export Successful",
+            "message": "Results exported to:\n{0}"
+        },
+        "exportError": {
+            "title": "Export Error",
+            "message": "Could not export CSV: {0}"
+        },
+        "summaryDialogError": {
+            "title": "Dialog Error",
+            "message": "Could not display summary dialog. Continue without summary?\n\nError: {0}"
+        },
+        "protectionCancelled": {
+            "title": "Cancelled",
+            "message": "You cancelled the protection settings.\n\nNo files will be labeled."
+        },
+        "asyncLabelError": {
+            "title": "Async Error",
+            "message": "Async label application failed:\n\n{0}\n\nFalling back to synchronous mode."
+        },
+        "noLogFile": {
+            "title": "No log file",
+            "message": "No log file exists yet. Apply labels to generate a log file."
+        }
+    },
+    "settings": {
+        "title": "Settings",
+        "tabs": {
+            "preferences": "Preferences",
+            "warnings": "Warnings",
+            "logging": "Logging",
+            "ui": "User Interface"
+        },
+        "preferences": {
+            "rememberLabel": "Remember last selected label",
+            "includeSubfolders": "Include subfolders by default",
+            "defaultFolder": "Default folder for file selection:"
+        },
+        "warnings": {
+            "showSummary": "Show summary before applying",
+            "massDowngrade": "Warn on mass downgrade",
+            "largeBatch": "Warn when processing large batches",
+            "protectionRequired": "Warn when protection is required",
+            "noChanges": "Warn when no changes are made",
+            "largeBatchThreshold": "Large batch threshold (number of files):",
+            "massDowngradeThreshold": "Mass downgrade threshold (number of files):"
+        },
+        "logging": {
+            "retention": "Log retention (days, 0 = no automatic deletion):",
+            "detailedLogging": "Enable detailed logging",
+            "customDirectory": "Custom log directory (leave empty for default):"
+        },
+        "ui": {
+            "language": "Language:",
+            "languageNote": "NOTE: Language changes take effect the next time the application starts.",
+            "rememberPosition": "Remember window position",
+            "windowSizeNote": "Window size is automatically saved when you close the application."
+        }
+    },
+    "summary": {
+        "title": "Summary of Changes",
+        "header": "You are about to apply the label '{0}'",
+        "newLabels": "New labels:",
+        "upgrades": "Upgrades:",
+        "downgrades": "Downgrades:",
+        "sameLabel": "Same label:",
+        "unchanged": "Unchanged (same ranking):",
+        "skipUnchanged": "Skip unchanged files (same label)"
+    },
+    "summaryDialog": {
+        "title": "Summary of Changes",
+        "header": "You are about to apply the label '{0}'",
+        "summary": "Summary",
+        "warnings": "Warnings",
+        "new": "New labels:",
+        "upgrade": "Upgrades:",
+        "downgrade": "Downgrades:",
+        "same": "Same label:",
+        "unchanged": "Unchanged (same ranking):",
+        "skipUnchanged": "Skip unchanged files (same label)",
+        "applyChanges": "Apply changes",
+        "cancel": "Cancel"
+    },
+    "statistics": {
+        "title": "Labeling Results",
+        "header": "Labeling completed: {0}",
+        "totalProcessed": "Total processed:",
+        "successful": "Successful:",
+        "failed": "Failed:",
+        "timeSpent": "Time spent:",
+        "timeFormat_seconds": "{0:F1} seconds",
+        "timeFormat_minutes": "{0:D}m {1:D}s",
+        "openDetailedLog": "Open detailed log"
+    },
+    "statisticsDialog": {
+        "title": "Labeling Results",
+        "header": "Labeling completed: {0}",
+        "summary": "Summary",
+        "totalProcessed": "Total processed:",
+        "successful": "Successful:",
+        "failed": "Failed:",
+        "timeUsed": "Time spent:",
+        "seconds": "{0} seconds",
+        "minutesSeconds": "{0}m {1}s",
+        "changesByType": "Changes by type",
+        "new": "New labels",
+        "upgrade": "Upgrades",
+        "downgrade": "Downgrades",
+        "unchanged": "Unchanged (same ranking)",
+        "same": "Same label",
+        "openLog": "Open detailed log",
+        "logNotFound": "Log file was not found.",
+        "error": "Error",
+        "exportCSV": "Export to CSV",
+        "exportSuccess": "Results exported to:\n{0}",
+        "exportSuccessTitle": "Export Successful",
+        "exportError": "Could not export CSV: {0}",
+        "exportErrorTitle": "Export Error",
+        "close": "Close"
+    },
+    "protection": {
+        "title": "Protection Settings",
+        "header": "This label requires protection.\n\nSelect who can do what with the file:",
+        "selectPermission": "Select permission:",
+        "enterUsers": "Enter users, groups, or organizations (comma-separated):",
+        "placeholder": "Example: user@domain.com, group@domain.com",
+        "documentExpires": "This document expires:"
+    },
+    "protectionDialog": {
+        "title": "Protection Settings",
+        "description": "This label requires protection.\n\nSelect who can do what with the file:",
+        "selectPermission": "Select permission:",
+        "viewer": "Viewer - View only",
+        "reviewer": "Reviewer - View, edit, no copy",
+        "coauthor": "Co-Author - View, edit, copy",
+        "coowner": "Co-Owner - All permissions",
+        "justMe": "Just for me",
+        "enterUsers": "Enter users, groups, or organizations (comma-separated):",
+        "example": "Example: user@domain.com, group@domain.com",
+        "documentExpires": "This document expires:",
+        "ok": "OK",
+        "cancel": "Cancel",
+        "cancelled": "You cancelled the protection settings.\n\nNo files will be labeled.",
+        "cancelledTitle": "Cancelled"
+    },
+    "justification": {
+        "title": "Justification Required",
+        "label": "Justification for sensitivity label downgrade:",
+        "defaultText": "Changed via bulk labeling"
+    },
+    "changeTypes": {
+        "new": "New",
+        "upgrade": "Upgrade",
+        "downgrade": "Downgrade",
+        "same": "Same",
+        "unchanged": "Unchanged"
+    }
+}
+
