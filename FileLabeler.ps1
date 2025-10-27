@@ -1274,6 +1274,7 @@ function Get-DefaultAppConfig {
             rememberLastLabel = $false
             includeSubfoldersDefault = $false
             lastSelectedLabelId = $null
+            language = "en-US"  # Default to English for international audience
         }
         warnings = @{
             showPreApplySummary = $true
@@ -1830,8 +1831,8 @@ function Get-SystemLanguage {
         return "en-US"
     }
     catch {
-        Write-Log -Message "Failed to detect system language, defaulting to Norwegian" -Level 'WARNING' -Source 'Get-SystemLanguage' -Exception $_
-        return "nb-NO"  # Default to Norwegian on error
+        Write-Log -Message "Failed to detect system language, defaulting to English" -Level 'WARNING' -Source 'Get-SystemLanguage' -Exception $_
+        return "en-US"  # Default to English on error
     }
 }
 
@@ -2025,7 +2026,7 @@ function Initialize-LanguageResources {
 # Global variables for language resources
 $script:LanguageResources = $null
 $script:NorwegianFallbackResources = $null
-$script:CurrentLanguage = "nb-NO"  # Default
+$script:CurrentLanguage = "en-US"  # Default to English for international audience
 
 function Show-SettingsDialog {
     <#

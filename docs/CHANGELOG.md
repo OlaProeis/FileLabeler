@@ -89,6 +89,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Logging verbosity and retention settings
   - Settings dialog with multiple tabs
 
+- **Multi-Language Support**: Language selection in Settings
+  - Norwegian (Norsk) - Default
+  - English
+  - Auto-detect based on system language
+  - Language files: `resources/Norwegian.json`, `resources/English.json`
+  - Restart required to apply language change
+
+- **Individual File Removal**: Remove files from selection without clearing all
+  - Right-click context menu on file list
+  - "Fjern fil" / "Remove file" option
+  - Delete key support for quick removal
+  - Updates file count and layout automatically
+
 #### Testing
 - **Unit Tests**: Comprehensive Pester test suite (58 tests, 100% pass rate)
   - Label cache management

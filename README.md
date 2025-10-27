@@ -25,6 +25,8 @@
 - ✅ **Access Control** - Full support for protection settings
 - ✅ **Downgrade Handling** - Automatic justification prompts when required
 - ✅ **Async Operations** - Responsive UI for large datasets (500+ files)
+- ✅ **Multi-Language Support** - Norwegian and English UI
+- ✅ **Individual File Removal** - Remove files from selection with right-click or Delete key
 - ✅ **Comprehensive Testing** - 106 tests, 100% pass rate
 
 ---
@@ -140,13 +142,13 @@ FileLabeler has comprehensive test coverage:
 
 ```powershell
 # Run all tests
-Invoke-Pester -Path .\tests\
+.\tests\run_tests.ps1
 
-# Run unit tests
+# Or run unit tests directly
 Invoke-Pester -Path .\tests\FileLabeler.Tests.ps1
 
 # Run integration tests
-.\run_integration_tests.ps1
+.\tests\run_integration_tests.ps1
 ```
 
 **Test Results:**

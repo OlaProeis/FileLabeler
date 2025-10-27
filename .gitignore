@@ -41,3 +41,12 @@ TRANSCRIPT_*.txt
 
 # Test data
 tests/IntegrationTestData/
+
+# Development tools and IDE
+.cursor/
+.taskmaster/
+.vscode/
+
+# User-specific configuration
+app_config.json
+.env
