@@ -449,6 +449,51 @@ $script:SupportedExtensionPatterns = @('*.docx', '*.xlsx', '*.pptx', '*.doc', '*
 
 <#
 .SYNOPSIS
+    Tests if a file is locked by another process
+.DESCRIPTION
+    Checks if a file can be opened with exclusive access
+    Returns $true if file is locked, $false if available
+.PARAMETER Path
+    Full path to the file to test
+.OUTPUTS
+    Boolean - $true if locked, $false if available
+#>
+function Test-FileLock {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Path
+    )
+    
+    try {
+        # Try to open file with exclusive access
+        $file = [System.IO.File]::Open(
+            $Path,
+            [System.IO.FileMode]::Open,
+            [System.IO.FileAccess]::ReadWrite,
+            [System.IO.FileShare]::None
+        )
+        
+        if ($file) {
+            $file.Close()
+            $file.Dispose()
+            return $false  # File is NOT locked
+        }
+    }
+    catch [System.IO.IOException] {
+        # IOException means file is in use
+        return $true  # File IS locked
+    }
+    catch {
+        # Other errors - treat as locked to be safe
+        Write-Log -Message "Error testing file lock" -Level 'WARNING' -Source 'Test-FileLock' -Context @{ Path = $Path } -Exception $_
+        return $true
+    }
+    
+    return $false
+}
+
+<#
+.SYNOPSIS
     Scans folder for supported files
 .DESCRIPTION
     Centralized function for scanning folders (sync or async) for supported file types
@@ -711,8 +756,8 @@ function Start-AsyncLabelRetrieval {
                     $result.LabelId = $cached.LabelId
                     $result.Rank = $cached.Rank
                     
-                    # Increment progress (thread-safe)
-                    [System.Threading.Interlocked]::Increment([ref]$SharedProgress.Processed)
+                    # Increment progress (thread-safe) - suppress output with [void]
+                    [void][System.Threading.Interlocked]::Increment([ref]$SharedProgress.Processed)
                     return $result
                 }
             } finally {
@@ -784,8 +829,8 @@ function Start-AsyncLabelRetrieval {
             $result.ErrorMessage = "LABEL RETRIEVAL CRASH: $($_.Exception.Message)"
         }
         
-        # Increment progress (thread-safe)
-        [System.Threading.Interlocked]::Increment([ref]$SharedProgress.Processed)
+        # Increment progress (thread-safe) - suppress output with [void]
+        [void][System.Threading.Interlocked]::Increment([ref]$SharedProgress.Processed)
         
         return $result
     }
@@ -1021,7 +1066,7 @@ function Start-AsyncBatchLabelApplication {
             # This prevents crashes when files are open in Office applications
             try {
                 $fileStream = [System.IO.File]::Open($FilePath, 'Open', 'ReadWrite', 'None')
-                $fileStream.Close()
+                [void]$fileStream.Close()
             } catch [System.IO.IOException] {
                 if ($_.Exception.Message -like "*being used by another process*" -or 
                     $_.Exception.Message -like "*file is in use*") {
@@ -1029,8 +1074,8 @@ function Start-AsyncBatchLabelApplication {
                     $result.Success = $false
                     $result.ErrorMessage = "Filen er åpen i et annet program. Lukk filen og prøv igjen."
                     $result.Message = "Hoppet over (låst)"
-                    [System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
-                    [System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
+                    [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
+                    [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
                     return $result
                 } else {
                     throw  # Other IO errors should be handled normally
@@ -1085,17 +1130,24 @@ function Start-AsyncBatchLabelApplication {
                         throw "Failed to create custom permissions"
                     }
                     
-                    # Apply label with custom protection
-                    Set-AIPFileLabel -Path $FilePath -LabelId $LabelId -CustomPermissions $customPermission -PreserveFileDetails
+                    # BUG FIX #2: Escape square brackets in filenames (Set-AIPFileLabel doesn't support -LiteralPath)
+                    $escapedPath = $FilePath -replace '\[','`[' -replace '\]','`]'
+                    # Apply label with custom protection - suppress output
+                    [void](Set-AIPFileLabel -Path $escapedPath -LabelId $LabelId -CustomPermissions $customPermission -PreserveFileDetails)
                     $result.Success = $true
                     $result.Message = "Beskyttelse: $permDesc"
+                    
+                    # BUG FIX #1: Force garbage collection to prevent Microsoft AIP SDK memory crashes
+                    # Microsoft official recommendation for bulk operations - suppress output
+                    [void][GC]::Collect()
+                    [void][GC]::WaitForPendingFinalizers()
                 } catch {
                     # Detailed error capture for protection-related failures
                     $result.Success = $false
                     $result.ErrorMessage = $_.Exception.Message
                     $result.ErrorType = $_.Exception.GetType().Name
-                    [System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
-                    [System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
+                    [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
+                    [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
                     return $result
                 }
                 
@@ -1105,32 +1157,47 @@ function Start-AsyncBatchLabelApplication {
                 $fileNeedsJustification = ($ChangeType -eq "Downgrade")
                 
                 try {
+                    # BUG FIX #2: Escape square brackets in filenames (Set-AIPFileLabel doesn't support -LiteralPath)
+                    $escapedPath = $FilePath -replace '\[','`[' -replace '\]','`]'
+                    
                     if ($fileNeedsJustification -and $Justification) {
-                        # Apply with justification proactively for downgrades
-                        Set-AIPFileLabel -Path $FilePath -LabelId $LabelId -JustificationMessage $Justification -PreserveFileDetails
+                        # Apply with justification proactively for downgrades - suppress output
+                        [void](Set-AIPFileLabel -Path $escapedPath -LabelId $LabelId -JustificationMessage $Justification -PreserveFileDetails)
                         $result.Success = $true
                         $result.Message = "Med begrunnelse"
                     } else {
-                        # Apply without justification
-                        Set-AIPFileLabel -Path $FilePath -LabelId $LabelId -PreserveFileDetails
+                        # Apply without justification - suppress output
+                        [void](Set-AIPFileLabel -Path $escapedPath -LabelId $LabelId -PreserveFileDetails)
                         $result.Success = $true
                     }
+                    
+                    # BUG FIX #1: Force garbage collection to prevent Microsoft AIP SDK memory crashes
+                    # Microsoft official recommendation for bulk operations - suppress output
+                    [void][GC]::Collect()
+                    [void][GC]::WaitForPendingFinalizers()
                 } catch {
                     $errorMessage = $_.Exception.Message
                     
                     # Handle justification requirement (fallback if detection missed it)
                     if ($errorMessage -like "*Justification*" -and $Justification) {
                         try {
-                            Set-AIPFileLabel -Path $FilePath -LabelId $LabelId -JustificationMessage $Justification -PreserveFileDetails
+                            # BUG FIX #2: Escape square brackets in filenames (Set-AIPFileLabel doesn't support -LiteralPath)
+                            $escapedPath = $FilePath -replace '\[','`[' -replace '\]','`]'
+                            # Suppress output
+                            [void](Set-AIPFileLabel -Path $escapedPath -LabelId $LabelId -JustificationMessage $Justification -PreserveFileDetails)
                             $result.Success = $true
                             $result.Message = "Med begrunnelse (retry)"
+                            
+                            # BUG FIX #1: Force garbage collection to prevent Microsoft AIP SDK memory crashes - suppress output
+                            [void][GC]::Collect()
+                            [void][GC]::WaitForPendingFinalizers()
                         } catch {
                             # Even retry failed
                             $result.Success = $false
                             $result.ErrorMessage = "Justification retry failed: $($_.Exception.Message)"
                             $result.ErrorType = $_.Exception.GetType().Name
-                            [System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
-                            [System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
+                            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
+                            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
                             return $result
                         }
                     } else {
@@ -1138,32 +1205,32 @@ function Start-AsyncBatchLabelApplication {
                         $result.Success = $false
                         $result.ErrorMessage = $errorMessage
                         $result.ErrorType = $_.Exception.GetType().Name
-                        [System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
-                        [System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
+                        [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
+                        [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
                         return $result
                     }
                 }
             }
             
-            # Update statistics (thread-safe)
-            [System.Threading.Interlocked]::Increment([ref]$SharedStats.SuccessCount)
-            [System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
+            # Update statistics (thread-safe) - suppress output with [void]
+            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.SuccessCount)
+            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
             
-            # Update change type breakdown
+            # Update change type breakdown - suppress output with Out-Null
             switch ($ChangeType) {
-                "New" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_New) }
-                "Upgrade" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Upgrade) }
-                "Downgrade" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Downgrade) }
-                "Unchanged" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Unchanged) }
-                "Same" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Same) }
+                "New" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_New) | Out-Null }
+                "Upgrade" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Upgrade) | Out-Null }
+                "Downgrade" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Downgrade) | Out-Null }
+                "Unchanged" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Unchanged) | Out-Null }
+                "Same" { [System.Threading.Interlocked]::Increment([ref]$SharedStats.ChangeTypeBreakdown_Same) | Out-Null }
             }
             
         } catch {
             $result.Success = $false
             $result.ErrorMessage = $_.Exception.Message
             $result.ErrorType = $_.Exception.GetType().Name
-            [System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
-            [System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
+            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
+            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
         }
         
         } catch {
@@ -1182,8 +1249,8 @@ function Start-AsyncBatchLabelApplication {
             $result.ErrorMessage = "RUNSPACE CRASH: $($_.Exception.Message)"
             $result.ErrorType = $_.Exception.GetType().FullName
             
-            [System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
-            [System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
+            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.FailureCount)
+            [void][System.Threading.Interlocked]::Increment([ref]$SharedStats.TotalProcessed)
         }
         
         return $result
@@ -4900,8 +4967,9 @@ $applyBtn.Add_Click({
     if ($useAsync) {
         Write-Log -Message "Using ASYNC mode for label application" -Level 'INFO' -Source 'ApplyButton' -Context @{ TotalFiles = $totalFiles }
         
-        # Prepare shared statistics (thread-safe counters)
-        $sharedStats = @{
+        # Prepare shared statistics (thread-safe synchronized hashtable)
+        # CRITICAL: Must be synchronized or runspace gets a copy and increments don't persist!
+        $sharedStats = [Hashtable]::Synchronized(@{
             TotalProcessed = 0
             SuccessCount = 0
             FailureCount = 0
@@ -4910,7 +4978,7 @@ $applyBtn.Add_Click({
             ChangeTypeBreakdown_Downgrade = 0
             ChangeTypeBreakdown_Unchanged = 0
             ChangeTypeBreakdown_Same = 0
-        }
+        })
         
         try {
             # Start async batch label application
@@ -4943,19 +5011,29 @@ $applyBtn.Add_Click({
                     continue
                 }
                 
-                # If result has no FilePath, it's a malformed result - skip logging but stats already updated
+                # Validate result has FilePath property (skip garbage from pipeline)
                 if (-not $result.FilePath) {
-                    Write-Log -Message "Result missing FilePath property - skipping file log but stats already counted" -Level 'WARNING' -Source 'ApplyButton' -Context @{
-                        Success = $result.Success
-                        ErrorMessage = if ($result.ErrorMessage) { $result.ErrorMessage } else { "None" }
-                    }
-                    # Don't continue - still try to process what we can
-                    # Stats were already incremented in runspace, so we're just logging here
-                    # But skip adding to ProcessedFiles/FailedFiles arrays since we don't have FilePath
+                    # Skip non-result objects (likely pipeline pollution)
                     continue
                 }
                 
+                # Count this result
+                $stats.TotalProcessed++
+                
                 if ($result.Success) {
+                    $stats.SuccessCount++
+                    
+                    # Update change type breakdown
+                    if ($result.ChangeType) {
+                        switch ($result.ChangeType) {
+                            "New" { $stats.ChangeTypeBreakdown.New++ }
+                            "Upgrade" { $stats.ChangeTypeBreakdown.Upgrade++ }
+                            "Downgrade" { $stats.ChangeTypeBreakdown.Downgrade++ }
+                            "Unchanged" { $stats.ChangeTypeBreakdown.Unchanged++ }
+                            "Same" { $stats.ChangeTypeBreakdown.Same++ }
+                        }
+                    }
+                    
                     $stats.ProcessedFiles += @{
                         FilePath = $result.FilePath
                         OriginalLabel = if ($result.OriginalLabel) { $result.OriginalLabel } else { "Ukjent" }
@@ -4985,6 +5063,8 @@ $applyBtn.Add_Click({
                         Protection = $result.Message
                     }
                 } else {
+                    $stats.FailureCount++
+                    
                     $stats.FailedFiles += @{
                         FilePath = $result.FilePath
                         OriginalLabel = if ($result.OriginalLabel) { $result.OriginalLabel } else { "Ukjent" }
@@ -5003,18 +5083,15 @@ $applyBtn.Add_Click({
                 }
             }
             
-            # Copy thread-safe counters to stats
-            $stats.TotalProcessed = $sharedStats.TotalProcessed
-            $stats.SuccessCount = $sharedStats.SuccessCount
-            $stats.FailureCount = $sharedStats.FailureCount
-            $stats.ChangeTypeBreakdown.New = $sharedStats.ChangeTypeBreakdown_New
-            $stats.ChangeTypeBreakdown.Upgrade = $sharedStats.ChangeTypeBreakdown_Upgrade
-            $stats.ChangeTypeBreakdown.Downgrade = $sharedStats.ChangeTypeBreakdown_Downgrade
-            $stats.ChangeTypeBreakdown.Unchanged = $sharedStats.ChangeTypeBreakdown_Unchanged
-            $stats.ChangeTypeBreakdown.Same = $sharedStats.ChangeTypeBreakdown_Same
-            
+            # Stats are now counted in the foreach loop above (simpler and more reliable)
             $successCount = $stats.SuccessCount
             $failureCount = $stats.FailureCount
+            
+            Write-Log -Message "Final stats from result processing" -Level 'INFO' -Source 'ApplyButton' -Context @{
+                TotalProcessed = $stats.TotalProcessed
+                SuccessCount = $successCount
+                FailureCount = $failureCount
+            }
             
         } catch {
             Write-Log -Message "Async label application failed, falling back to sync" -Level 'ERROR' -Source 'ApplyButton' -Exception $_
@@ -5087,31 +5164,23 @@ $applyBtn.Add_Click({
         $form.Refresh()
         
         try {
-            # CRITICAL: Check if file is locked before attempting label application
+            # BUG FIX #3: Check if file is locked before attempting label application
             # This prevents crashes when files are open in Office applications
-            try {
-                $fileStream = [System.IO.File]::Open($file, 'Open', 'ReadWrite', 'None')
-                $fileStream.Close()
-            } catch [System.IO.IOException] {
-                if ($_.Exception.Message -like "*being used by another process*" -or 
-                    $_.Exception.Message -like "*file is in use*") {
-                    # File is locked - skip it and continue
-                    Write-Log -Message "File is locked by another process, skipping" -Level 'WARNING' -Source 'ApplyButton-SyncMode' -Context @{ FilePath = $file }
-                    $failureCount++
-                    $stats.FailureCount++
-                    $stats.TotalProcessed++
-                    $stats.FailedFiles += @{
-                        FilePath = $file
-                        OriginalLabel = $originalLabel
-                        NewLabel = $selectedLabelObj.DisplayName
-                        ChangeType = $changeType
-                        Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-                        Error = "Filen er åpen i et annet program (låst)"
-                    }
-                    continue  # Skip to next file
-                } else {
-                    throw  # Other IO errors should be handled normally
+            if (Test-FileLock -Path $file) {
+                # File is locked - skip it and continue
+                Write-Log -Message "File is locked by another process, skipping" -Level 'WARNING' -Source 'ApplyButton-SyncMode' -Context @{ FilePath = $file }
+                $failureCount++
+                $stats.FailureCount++
+                $stats.TotalProcessed++
+                $stats.FailedFiles += @{
+                    FilePath = $file
+                    OriginalLabel = $originalLabel
+                    NewLabel = $selectedLabelObj.DisplayName
+                    ChangeType = $changeType
+                    Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+                    Error = "Filen er åpen i et annet program (låst)"
                 }
+                continue  # Skip to next file
             }
             
             # Apply label - try without justification first
@@ -5167,10 +5236,17 @@ $applyBtn.Add_Click({
                         # Create custom permissions
                         $customPermission = New-AIPCustomPermissions -Users $userList -Permissions $permissionLevel -ErrorAction Stop
                         
+                        # BUG FIX #2: Escape square brackets in filenames (Set-AIPFileLabel doesn't support -LiteralPath)
+                        $escapedPath = $file -replace '\[','`[' -replace '\]','`]'
                         # Apply label with custom protection
-                        Set-AIPFileLabel -Path $file -LabelId $labelId -CustomPermissions $customPermission -PreserveFileDetails -ErrorAction Stop
+                        Set-AIPFileLabel -Path $escapedPath -LabelId $labelId -CustomPermissions $customPermission -PreserveFileDetails -ErrorAction Stop
                         $successCount++
                         Write-Log "SUKSESS: $file (beskyttelse: $permDesc)"
+                        
+                        # BUG FIX #1: Force garbage collection to prevent Microsoft AIP SDK memory crashes
+                        # Microsoft official recommendation for bulk operations
+                        [GC]::Collect()
+                        [GC]::WaitForPendingFinalizers()
                         
                         # Update statistics
                         $stats.SuccessCount++
@@ -5217,17 +5293,25 @@ $applyBtn.Add_Click({
                     # Check if this specific file needs justification (downgrade case)
                     $fileNeedsJustification = ($changeType -eq "Downgrade")
                     
+                    # BUG FIX #2: Escape square brackets in filenames (Set-AIPFileLabel doesn't support -LiteralPath)
+                    $escapedPath = $file -replace '\[','`[' -replace '\]','`]'
+                    
                     if ($fileNeedsJustification -and $userJustification) {
                         # Apply with justification
-                        Set-AIPFileLabel -Path $file -LabelId $labelId -JustificationMessage $userJustification -PreserveFileDetails -ErrorAction Stop
+                        Set-AIPFileLabel -Path $escapedPath -LabelId $labelId -JustificationMessage $userJustification -PreserveFileDetails -ErrorAction Stop
                         $successCount++
                         Write-Log "SUKSESS (med begrunnelse): $file"
                     } else {
                         # Apply without justification
-                        Set-AIPFileLabel -Path $file -LabelId $labelId -PreserveFileDetails -ErrorAction Stop
+                        Set-AIPFileLabel -Path $escapedPath -LabelId $labelId -PreserveFileDetails -ErrorAction Stop
                         $successCount++
                         Write-Log "SUKSESS: $file"
                     }
+                    
+                    # BUG FIX #1: Force garbage collection to prevent Microsoft AIP SDK memory crashes
+                    # Microsoft official recommendation for bulk operations
+                    [GC]::Collect()
+                    [GC]::WaitForPendingFinalizers()
                     
                     # Update statistics
                     $stats.SuccessCount++
@@ -5253,9 +5337,15 @@ $applyBtn.Add_Click({
                 # Handle justification requirement
                 if ($errorMessage -like "*Justification*") {
                     try {
-                        Set-AIPFileLabel -Path $file -LabelId $labelId -JustificationMessage $userJustification -PreserveFileDetails -ErrorAction Stop
+                        # BUG FIX #2: Escape square brackets in filenames (Set-AIPFileLabel doesn't support -LiteralPath)
+                        $escapedPath = $file -replace '\[','`[' -replace '\]','`]'
+                        Set-AIPFileLabel -Path $escapedPath -LabelId $labelId -JustificationMessage $userJustification -PreserveFileDetails -ErrorAction Stop
                         $successCount++
                         Write-Log "SUKSESS (med begrunnelse): $file"
+                        
+                        # BUG FIX #1: Force garbage collection to prevent Microsoft AIP SDK memory crashes
+                        [GC]::Collect()
+                        [GC]::WaitForPendingFinalizers()
                         
                         # Update statistics
                         $stats.SuccessCount++

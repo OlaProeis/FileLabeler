@@ -140,7 +140,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-#### Critical Bugs
+#### Critical Bugs (Pre-Release)
+- **Microsoft AIP SDK Memory Crashes**: Fixed `AccessViolationException` and `NullReferenceException` in bulk operations
+  - Added forced garbage collection after every `Set-AIPFileLabel` call
+  - Implements Microsoft's official recommendation: `[GC]::Collect()` and `[GC]::WaitForPendingFinalizers()`
+  - Prevents crashes when processing 50+ files
+  - References: GitHub Issue #15870, Microsoft Q&A reports
+  - Fixed in all 8 label application locations
+
+- **Square Brackets in Filenames**: Fixed crashes on files with `[` or `]` characters
+  - PowerShell treats square brackets as wildcard characters with `-Path` parameter
+  - Solution: Escape brackets with backticks before all `Set-AIPFileLabel` calls
+  - Pattern: `$escapedPath = $FilePath -replace '\[','`[' -replace '\]','`]'`
+  - Files like `Report[2024].xlsx` now process correctly
+  - Note: `Set-AIPFileLabel` does not support `-LiteralPath` parameter
+
+- **File Lock Detection**: Added detection for files open in other applications
+  - New `Test-FileLock` function checks exclusive file access
+  - Files open in Word/Excel/PowerPoint are gracefully skipped
+  - Clear user message: "File is open in another program"
+  - Prevents IOException crashes and improves user experience
+  - Applied to both sync and async processing modes
+
+- **Statistics Always Show Zero**: Fixed async statistics not displaying processed files
+  - Changed from complex thread-safe counters to simple result counting
+  - Stats now counted in main thread after async jobs complete
+  - Eliminated synchronized hashtable complexity
+  - Suppressed all pipeline output in runspace scripts with `[void]` and `| Out-Null`
+  - Statistics dialog now shows accurate counts for all operations
+
 - **Nested Async Operations Crash**: Fixed crash during folder import label retrieval phase
   - Removed nested async operations
   - Simplified folder scan completion flow
