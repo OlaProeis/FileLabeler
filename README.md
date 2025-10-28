@@ -1,16 +1,16 @@
 # FileLabeler
 
-> **Bulk Sensitivity Label Application for Microsoft Purview**
+**Bulk Sensitivity Label Application for Microsoft Purview**
 
-[![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
-[![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-lightgrey.svg)](https://www.microsoft.com/windows)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue) ![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey) ![License](https://img.shields.io/github/license/OlaProeis/FileLabeler) ![Stars](https://img.shields.io/github/stars/OlaProeis/FileLabeler) ![Issues](https://img.shields.io/github/issues/OlaProeis/FileLabeler)
 
 ---
 
-## Overview
+## 🎯 Overview
 
 **FileLabeler** is a PowerShell-based GUI application that enables users to quickly apply Microsoft Purview sensitivity labels to multiple files simultaneously. The application preserves original file dates and provides a modern, user-friendly interface for bulk labeling tasks.
+
+**Perfect for:** IT administrators, compliance teams, and security professionals managing large volumes of sensitive documents.
 
 ---
 
@@ -33,13 +33,35 @@
 
 ## Quick Start
 
+## 🚀 Quick Start
+
 ### Requirements
 
-- **OS**: Windows 10/11 (64-bit)
-- **PowerShell**: 5.1 or later (included with Windows)
-- **Microsoft Purview Information Protection Client**: [Download](https://www.microsoft.com/en-us/download/details.aspx?id=53018)
+| Component | Requirement |
+|-----------|-------------|
+| **Operating System** | Windows 10/11 (64-bit) |
+| **PowerShell** | 5.1 or later (included with Windows) |
+| **Microsoft Purview Client** | Required for label operations |
+| **License** | Microsoft 365 E3 or higher (for manual labeling) |
 
 ### Installation
+
+#### Prerequisites: Install Microsoft Purview Information Protection Client
+
+**Option 1: Full Client**
+```powershell
+# Download and install the full client (includes GUI + PowerShell)
+# Download from: https://aka.ms/AIPClient
+
+# Silent installation
+PurviewInfoProtection.exe /quiet
+```
+
+**Option 2: PowerShell Module Only**
+```powershell
+# Install only PowerShell cmdlets (no GUI components)
+PurviewInfoProtection.exe PowerShellOnly=true /quiet
+```
 
 #### Method 1: Run as Script
 ```powershell
