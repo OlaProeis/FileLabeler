@@ -44,7 +44,7 @@
 #### Method 1: Run as Script
 ```powershell
 # Download the project
-git clone https://github.com/yourusername/FileLabeler.git
+git clone https://github.com/OlaProeis/FileLabeler.git
 cd FileLabeler
 
 # Run the application
@@ -209,8 +209,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/FileLabeler/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/FileLabeler/discussions)
+- **Issues**: [GitHub Issues](https://github.com/OlaProeis/FileLabeler/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/OlaProeis/FileLabeler/discussions)
 
 ---
 
